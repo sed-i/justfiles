@@ -16,7 +16,7 @@ editor:
 golang:
 	sudo apt install golang-go
 
-cli-tools: exa bat duf delta fd
+cli-tools: exa bat duf delta fd dust
 
 git-tools: delta gitui
 
@@ -24,6 +24,11 @@ sysadmin: btop
 
 btop:
 	sudo apt install btop
+
+dust:
+	# A more intuitive version of du in rust 
+	# https://github.com/bootandy/dust
+	cargo install du-dust
 
 fd:
 	# A simple, fast and user-friendly alternative to 'find' 
