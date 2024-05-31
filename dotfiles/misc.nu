@@ -1,1 +1,2 @@
-alias l = exa -l
+alias l = eza -l
+alias bat = batcat
