@@ -95,9 +95,17 @@ dev: git rust sysadmin
     sudo apt install -y pkg-config libssl-dev
     cargo install nu
 
+tui-fonts:
+    sudo apt install -y fonts-firacode
 
-desktop: git
-    sudo apt install -y gedit rhythmbox notepadqq gimp inkscape xournalpp fonts-firacode keepassxc
+kitty: tui-fonts
+    sudo apt install -y kitty
+    mkdir -p "$HOME/.config/kitty"
+    ln -sf "$PWD/dotfiles/kitty.conf" "$HOME/.config/kitty/kitty.conf"
+
+
+desktop: git kitty
+    sudo apt install -y gedit rhythmbox notepadqq gimp inkscape xournalpp keepassxc
     sudo snap install multipass
     sudo snap install signal-desktop
     sudo snap install obsidian --classic
