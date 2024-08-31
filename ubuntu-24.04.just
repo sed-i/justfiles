@@ -40,10 +40,13 @@ git:
 
 
 rust:
-    sudo apt install -y rustup
-    rustup toolchain install stable
+    #sudo apt install -y rustup
+    #rustup toolchain install stable
 
-aliases:
+editor:
+    sudo apt install -y neovim
+
+aliases: editor
     ln -sf "$PWD/dotfiles/aliases" "$HOME/.aliases"
     
     touch "$HOME/.bash_aliases"
@@ -51,6 +54,7 @@ aliases:
     grep -qxF '. ~/.aliases/juju.sh' "$HOME/.bash_aliases" || echo '. ~/.aliases/juju.sh' >> "$HOME/.bash_aliases"
     grep -qxF '. ~/.aliases/misc.sh' "$HOME/.bash_aliases" || echo '. ~/.aliases/misc.sh' >> "$HOME/.bash_aliases"
     
+    test -f "$HOME/.config/nushell/config.nu" && echo "" >> "$HOME/.config/nushell/config.nu"
     test -f "$HOME/.config/nushell/config.nu" && grep -qxF '$env.EDITOR = "nvim"' "$HOME/.config/nushell/config.nu" || echo '$env.EDITOR = "nvim"' >> "$HOME/.config/nushell/config.nu"
     test -f "$HOME/.config/nushell/config.nu" && grep -qxF 'source ~/.aliases/git.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/git.nu' >> "$HOME/.config/nushell/config.nu"
     test -f "$HOME/.config/nushell/config.nu" && grep -qxF 'source ~/.aliases/juju.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/juju.nu' >> "$HOME/.config/nushell/config.nu"
