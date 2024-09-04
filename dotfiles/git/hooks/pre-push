@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+reporoot=$(git rev-parse --show-toplevel)
+
+if [[ -f $reporoot/tox.ini ]]; then
+    toxenvs=( "lint" "static" "static-charm" "static-lib" "static-unit" "static-integration" "unit" )
+    for toxenv in "${toxenvs[@]}"; do
+        if ! [[ -z $(tox -a | grep -x $toxenv) ]]; then
+            tox -e $toxenv
+        fi
+    done
+fi
+
