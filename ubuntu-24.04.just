@@ -8,11 +8,14 @@
 # just -f ubuntu-24.04.just charm-dev
 # just -f ubuntu-24.04.just desktop
 
+
 update:
     sudo apt update
 
+
 neovim: update
     sudo apt install -y neovim
+
 
 bare: update neovim
     sudo apt install -y git curl tree btop htop ripgrep fd-find eza bat duf
@@ -29,6 +32,7 @@ bare: update neovim
     # Disk Usage/Free Utility - a better 'df' alternative
     # https://github.com/muesli/duf
 
+
 delta: git
     # A syntax-highlighting pager for git, diff, and grep output
     # https://github.com/dandavison/delta
@@ -41,6 +45,7 @@ delta: git
     git config --global delta.navigate true
     git config --global delta.side-by-side true
     git config --global delta.line-numbers true
+
     
 beyondcompare: bare
     sudo apt install -y libqt5printsupport5
@@ -83,19 +88,14 @@ rust:
     #sudo apt install -y rustup
     #rustup toolchain install stable
 
-aliases: neovim
+
+aliases:
     ln -sf "$PWD/dotfiles/aliases" "$HOME/.aliases"
     
     touch "$HOME/.bash_aliases"
     grep -qxF '. ~/.aliases/git.sh' "$HOME/.bash_aliases" || echo '. ~/.aliases/git.sh' >> "$HOME/.bash_aliases"
     grep -qxF '. ~/.aliases/juju.sh' "$HOME/.bash_aliases" || echo '. ~/.aliases/juju.sh' >> "$HOME/.bash_aliases"
     grep -qxF '. ~/.aliases/misc.sh' "$HOME/.bash_aliases" || echo '. ~/.aliases/misc.sh' >> "$HOME/.bash_aliases"
-    
-    test -f "$HOME/.config/nushell/config.nu" && echo "" >> "$HOME/.config/nushell/config.nu"
-    test -f "$HOME/.config/nushell/config.nu" && grep -qxF '$env.EDITOR = "nvim"' "$HOME/.config/nushell/config.nu" || echo '$env.EDITOR = "nvim"' >> "$HOME/.config/nushell/config.nu"
-    test -f "$HOME/.config/nushell/config.nu" && grep -qxF 'source ~/.aliases/git.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/git.nu' >> "$HOME/.config/nushell/config.nu"
-    test -f "$HOME/.config/nushell/config.nu" && grep -qxF 'source ~/.aliases/juju.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/juju.nu' >> "$HOME/.config/nushell/config.nu"
-    test -f "$HOME/.config/nushell/config.nu" && grep -qxF 'source ~/.aliases/misc.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/misc.nu' >> "$HOME/.config/nushell/config.nu"
 
 
 dev: bare git
@@ -127,11 +127,16 @@ kitty: tui-fonts
     ln -sf "$PWD/dotfiles/kitty.conf" "$HOME/.config/kitty/kitty.conf"
 
 
-nushell: && aliases
+nushell: && aliases neovim
     sudo snap install --classic nushell
     mkdir -p ~/.config/nushell/
-    nu -c "config nu --default" > ~/.config/nushell/config.nu
-    nu -c "config env --default" > ~/.config/nushell/env.nu
+    nu -c "config nu --default" > $HOME/.config/nushell/config.nu
+    nu -c "config env --default" > $HOME/.config/nushell/env.nu
+
+    grep -qxF '$env.EDITOR = "nvim"' "$HOME/.config/nushell/config.nu" || echo '$env.EDITOR = "nvim"' >> "$HOME/.config/nushell/config.nu"
+    grep -qxF 'source ~/.aliases/git.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/git.nu' >> "$HOME/.config/nushell/config.nu"
+    grep -qxF 'source ~/.aliases/juju.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/juju.nu' >> "$HOME/.config/nushell/config.nu"
+    grep -qxF 'source ~/.aliases/misc.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/misc.nu' >> "$HOME/.config/nushell/config.nu"
 
 
 desktop: git kitty
