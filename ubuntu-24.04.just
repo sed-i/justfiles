@@ -90,7 +90,7 @@ rust:
 
 
 aliases:
-    ln -sf "$PWD/dotfiles/aliases" "$HOME/.aliases"
+    ln -sfn "$PWD/dotfiles/aliases" "$HOME/.aliases"
     
     touch "$HOME/.bash_aliases"
     grep -qxF '. ~/.aliases/git.sh' "$HOME/.bash_aliases" || echo '. ~/.aliases/git.sh' >> "$HOME/.bash_aliases"
@@ -118,11 +118,9 @@ dev: bare git
     # sudo apt install -y pkg-config libssl-dev
     # cargo install nu
 
-tui-fonts:
-    sudo apt install -y fonts-firacode
 
-kitty: tui-fonts
-    sudo apt install -y kitty kitty-doc kitty-terminfo
+kitty: nushell
+    sudo apt install -y kitty kitty-doc kitty-terminfo fonts-firacode
     mkdir -p "$HOME/.config/kitty"
     ln -sf "$PWD/dotfiles/kitty.conf" "$HOME/.config/kitty/kitty.conf"
 
@@ -146,7 +144,7 @@ desktop: git kitty
     sudo snap install obsidian --classic
 
 
-zellij-remote:
+zellij-remote: nushell
     mkdir -p ~/.local/bin
     wget -qO - https://github.com/zellij-org/zellij/releases/download/v0.40.1/zellij-x86_64-unknown-linux-musl.tar.gz | tar -xz -C ~/.local/bin/
     mkdir -p ~/.config/zellij
