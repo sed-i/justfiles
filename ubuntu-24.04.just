@@ -11,7 +11,7 @@
 update:
     sudo apt update
 
-neovim:
+neovim: update
     sudo apt install -y neovim
 
 bare: update neovim
@@ -83,7 +83,7 @@ rust:
     #sudo apt install -y rustup
     #rustup toolchain install stable
 
-aliases: bare
+aliases: neovim
     ln -sf "$PWD/dotfiles/aliases" "$HOME/.aliases"
     
     touch "$HOME/.bash_aliases"
@@ -98,7 +98,7 @@ aliases: bare
     test -f "$HOME/.config/nushell/config.nu" && grep -qxF 'source ~/.aliases/misc.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/misc.nu' >> "$HOME/.config/nushell/config.nu"
 
 
-dev: bare rust sysadmin
+dev: bare git
     # Config
     ln -sf "$PWD/dotfiles/.editorconfig" "$HOME/.editorconfig"
 
@@ -127,12 +127,23 @@ kitty: tui-fonts
     ln -sf "$PWD/dotfiles/kitty.conf" "$HOME/.config/kitty/kitty.conf"
 
 
+nushell: && aliases
+    mkdir -p ~/.local/bin
+    wget https://github.com/nushell/nushell/releases/download/0.97.1/nu-0.97.1-x86_64-unknown-linux-gnu.tar.gz -O - | tar -C ~/.local/bin -xz --wildcards "*/nu*" --strip-components=1
+    mkdir -p ~/.config/nushell/
+    ~/.local/bin/nu -c "config nu --default" > ~/.config/nushell/config.nu
+    ~/.local/bin/nu -c "config env --default" > ~/.config/nushell/env.nu
+
+
 desktop: git kitty
-    sudo apt install -y gedit rhythmbox notepadqq gimp inkscape xournalpp keepassxc
+    sudo apt install -y gedit rhythmbox notepadqq gimp inkscape xournalpp keepassxc fonts-linuxlibertine fonts-freefont-otf ttf-mscorefonts-installer
     sudo snap install multipass
     sudo snap install signal-desktop
     sudo snap install obsidian --classic
 
 
 charm-dev: git delta neovim aliases
+    sudo snap install --classic helix
     sudo apt install -y kitty-terminfo
+
+
