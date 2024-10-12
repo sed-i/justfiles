@@ -128,11 +128,10 @@ kitty: tui-fonts
 
 
 nushell: && aliases
-    mkdir -p ~/.local/bin
-    wget https://github.com/nushell/nushell/releases/download/0.97.1/nu-0.97.1-x86_64-unknown-linux-gnu.tar.gz -O - | tar -C ~/.local/bin -xz --wildcards "*/nu*" --strip-components=1
+    sudo snap install --classic nushell
     mkdir -p ~/.config/nushell/
-    ~/.local/bin/nu -c "config nu --default" > ~/.config/nushell/config.nu
-    ~/.local/bin/nu -c "config env --default" > ~/.config/nushell/env.nu
+    nu -c "config nu --default" > ~/.config/nushell/config.nu
+    nu -c "config env --default" > ~/.config/nushell/env.nu
 
 
 desktop: git kitty
@@ -142,7 +141,14 @@ desktop: git kitty
     sudo snap install obsidian --classic
 
 
-charm-dev: git delta neovim aliases
+zellij-remote:
+    mkdir -p ~/.local/bin
+    wget -qO - https://github.com/zellij-org/zellij/releases/download/v0.40.1/zellij-x86_64-unknown-linux-musl.tar.gz | tar -xz -C ~/.local/bin/
+    mkdir -p ~/.config/zellij
+    ln -sf "$PWD/dotfiles/zellij/config.remote.kdl" "$HOME/.config/zellij/config.kdl"
+
+
+charm-dev: git delta neovim aliases nushell zellij-remote
     sudo snap install --classic helix
     sudo apt install -y kitty-terminfo
 
