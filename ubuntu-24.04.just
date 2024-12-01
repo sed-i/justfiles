@@ -135,6 +135,7 @@ nushell: && aliases neovim
     grep -qxF 'source ~/.aliases/git.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/git.nu' >> "$HOME/.config/nushell/config.nu"
     grep -qxF 'source ~/.aliases/juju.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/juju.nu' >> "$HOME/.config/nushell/config.nu"
     grep -qxF 'source ~/.aliases/misc.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/misc.nu' >> "$HOME/.config/nushell/config.nu"
+    grep -qxF 'source ~/.aliases/terraform.nu' "$HOME/.config/nushell/config.nu" || echo 'source ~/.aliases/terraform.nu' >> "$HOME/.config/nushell/config.nu"
 
 
 desktop: git kitty
