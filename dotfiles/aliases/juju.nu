@@ -23,3 +23,4 @@ alias jrp = juju refresh --path
 alias jshu = juju show-unit
 alias jof = juju offer
 alias jcon = juju consume
+alias jsa = juju scale-application
