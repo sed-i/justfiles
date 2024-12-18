@@ -25,3 +25,20 @@ alias jshu='juju show-unit'
 alias jof='juju offer'
 alias jcon='juju consume'
 alias jsa='juju scale-application'
+
+reldata_endpoints() {
+  # $1 = unit name
+  jshu "$1" --format=json | jq -r ".\"$1\".\"relation-info\" | .[] | .endpoint"
+}
+
+app_data() {
+  # $1 = unit name
+  # $2 = endpoint name
+  jshu "$1" --format=json | jq -r ".\"$1\".\"relation-info\" | .[] | select(.endpoint == \"$2\") | .\"application-data\""
+}
+
+unit_data() {
+  # $1 = unit name
+  # $2 = endpoint name
+  jshu "$1" --format=json | jq -r ".\"$1\".\"relation-info\" | .[] | select(.endpoint == \"$2\") | .\"related-units\""
+}
