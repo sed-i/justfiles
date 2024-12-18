@@ -1,4 +1,5 @@
 alias j='juju'
+alias jb='juju bootstrap'
 alias jst='juju status --relations'
 alias jssl='juju show-status-log'
 alias jm='juju models'
