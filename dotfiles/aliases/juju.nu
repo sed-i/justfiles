@@ -60,10 +60,10 @@ def relation_info [
     [true, false, true] => { $info | where endpoint == $endpoint | reject application-data }
 
     # App data for all endpoints
-    [false, true, false] => "App data for all endpoints is not supported yet"
+    [false, true, false] => { $info | reject related-units }
 
     # Unit data for all endpoints
-    [false, false, true] => "Unit data for all endpoints is not supported yet"
+    [false, false, true] => { $info | reject application-data }
 
     _ => { "Not supported yet" }
   }
