@@ -65,7 +65,7 @@ def relation_info [
     # Unit data for all endpoints
     [false, false, true] => { $info | reject application-data }
 
-    _ => { "Not supported yet" }
+    _ => { "Error" }
   }
 }
 
