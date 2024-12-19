@@ -31,29 +31,41 @@ def jpbl [unit container command] {
   sh -c $'juju exec --unit ($unit) -- PEBBLE_SOCKET=/charm/containers/($container)/pebble.socket pebble ($command)'
 }
 
-def reldata_endpoints [unit] {
-  juju show-unit $unit
-  | from yaml
-  | get $unit
-  | get relation-info
-  | get endpoint
-}
+def relation_info [
+  unit: string,
+  endpoint?: string,
+  --app_only (-a),
+  --unit_only (-u),
+] {
 
-def app_data [unit endpoint] {
-  juju show-unit $unit
+  let info = juju show-unit $unit
   | from yaml
   | get $unit
   | get relation-info
-  | where endpoint == $endpoint
-  | reject related-units
-}
 
-def unit_data [unit endpoint] {
-  juju show-unit $unit
-  | from yaml
-  | get $unit
-  | get relation-info
-  | where endpoint == $endpoint
-  | reject application-data
+  let endpoint_given = $endpoint != null
+
+  match [$endpoint_given, $app_only $unit_only] {
+
+    # Entire relation-info, i.e. both app and unit data for all endpoints
+    [false, false, false] | [false, true, true] => $info
+
+    # Both app and unit data for given endpoint
+    [true, false, false] | [true, true, true] => { $info | where endpoint == $endpoint }
+
+    # App data for given endpoint
+    [true, true, false] => { $info | where endpoint == $endpoint | reject related-units }
+
+    # Unit data for given endpoint
+    [true, false, true] => { $info | where endpoint == $endpoint | reject application-data }
+
+    # App data for all endpoints
+    [false, true, false] => "App data for all endpoints is not supported yet"
+
+    # Unit data for all endpoints
+    [false, false, true] => "Unit data for all endpoints is not supported yet"
+
+    _ => { "Not supported yet" }
+  }
 }
 
