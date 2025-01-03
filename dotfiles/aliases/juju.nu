@@ -51,21 +51,41 @@ def relation_info [
     [false, false, false] | [false, true, true] => $info
 
     # Both app and unit data for given endpoint
-    [true, false, false] | [true, true, true] => { $info | where endpoint == $endpoint }
+    [true, false, false] | [true, true, true] => {
+      $info
+      | where endpoint == $endpoint
+      | reject endpoint related-endpoint
+    }
 
     # App data for given endpoint
-    [true, true, false] => { $info | where endpoint == $endpoint | reject related-units }
+    [true, true, false] => {
+      $info
+      | where endpoint == $endpoint
+      | reject related-units endpoint related-endpoint
+    }
 
     # Unit data for given endpoint
-    [true, false, true] => { $info | where endpoint == $endpoint | reject application-data }
+    [true, false, true] => {
+      $info
+      | where endpoint == $endpoint
+      | reject application-data endpoint related-endpoint
+    }
 
     # App data for all endpoints
-    [false, true, false] => { $info | reject related-units }
+    [false, true, false] => {
+      $info | reject related-units
+    }
 
     # Unit data for all endpoints
-    [false, false, true] => { $info | reject application-data }
+    [false, false, true] => {
+      $info | reject application-data
+    }
 
     _ => { "Error" }
   }
+}
+
+def uid_from_encoded_dashboard [] {
+  $in | base64 -d | xz --decompress --stdout | from json | get uid dashboard_alt_uid
 }
 

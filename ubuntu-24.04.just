@@ -17,6 +17,21 @@ neovim: update
     sudo apt install -y neovim
 
 
+# [no-cd] = Run with the working directory set to directory in which just was invoked
+[no-cd]
+rip: abcde
+    # -a = action
+    # -p = pad track numbers with zeros
+    # -V = verbosity
+    abcde -VV -a default,cue,embedalbumart -o flac:"--best --verify" -p
+
+[private]
+abcde:
+    sudo apt install -y abcde flac imagemagick mkcue
+    sudo systemctl disable postfix
+    sudo systemctl stop postfix
+
+
 bare: update neovim
     sudo apt install -y git curl tree btop htop ripgrep fd-find eza bat duf
 
