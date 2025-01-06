@@ -85,6 +85,14 @@ def relation_info [
   }
 }
 
+def xz64 [] {
+  $in | xz --compress | base64
+}
+
+def xz64d [] {
+  $in | base64 -d | xz --decompress
+}
+
 def uid_from_encoded_dashboard [] {
   $in | base64 -d | xz --decompress --stdout | from json | get uid dashboard_alt_uid
 }
