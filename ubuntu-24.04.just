@@ -32,6 +32,16 @@ abcde:
     sudo systemctl stop postfix
 
 
+codecs:
+    # https://www.howtogeek.com/240487/how-to-play-dvds-and-blu-rays-on-linux/
+    # https://askubuntu.com/questions/1349576/how-to-play-blu-rays-with-vlc-on-ubuntu-20-04
+    # http://fvonline-db.bplaced.net/
+    sudo apt install -y libbluray2 libbluray-bin libdvdnav4 libdvd-pkg ubuntu-restricted-extras libavcodec60 libbluray-bdj libaacs0
+    mkdir -p $HOME/.config/aacs/
+    wget -qO- http://fvonline-db.bplaced.net/fv_download.php?lang=eng | funzip > $HOME/.config/aacs/KEYDB.cfg
+    sudo dpkg-reconfigure libdvd-pkg
+
+
 bare: update neovim
     sudo apt install -y git curl tree btop htop ripgrep fd-find eza bat duf
 
