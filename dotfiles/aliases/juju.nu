@@ -97,3 +97,39 @@ def uid_from_encoded_dashboard [] {
   $in | base64 -d | xz --decompress --stdout | from json | get uid dashboard_alt_uid
 }
 
+def jsync [unit_name: string, filepath: path] {
+  let charm_root = get_charm_root
+  let metadata_path = $charm_root | path join 'metadata.yaml'
+  let charmcraft_path = $charm_root | path join 'charmcraft.yaml'
+  let charm_name = if ($metadata_path | path exists) {
+    open $metadata_path | get name
+  } else {
+    open $charmcraft_path | get name
+  }
+
+  print $"Attempting to sync ($unit_name) \(($charm_name)) from ($charm_root)..."
+
+  let rel_path = $filepath | path expand | path relative-to $charm_root
+
+  let remote_target = $'/var/lib/juju/agents/unit-($unit_name | str replace '/' '-')/charm/($rel_path)'
+  print $'  - Copying from ($rel_path) to ($remote_target)'
+  let remote_temp = juju ssh $unit_name mktemp -d
+  printf $'  - via ($remote_temp)'
+  juju scp $filepath $'($unit_name):($remote_temp)'
+  juju ssh $unit_name mkdir -p $'($remote_target | path dirname)'
+  juju ssh $unit_name cp $'($remote_temp)/($rel_path | path basename)' $remote_target
+}
+
+def get_charm_root []: nothing -> string {
+  mut p = pwd
+  while ($p != "/") {
+    #print $p
+    let pp = $p
+    if (["charmcraft.yaml" "metadata.yaml"] | each {|it| $pp | path join $it} | path exists | any {|el| $el}) {
+      return $pp
+      break
+    }
+    $p = $p | path dirname
+  }
+  ""
+}
