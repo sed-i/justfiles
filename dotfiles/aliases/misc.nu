@@ -11,4 +11,4 @@ def multipass_vm_ip [name] {
 def multipass_port_fwd [local_port, vm_name, remote_ip, remote_port] {
   let target = multipass_vm_ip $vm_name
   sudo ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking no" -i /var/snap/multipass/common/data/multipassd/ssh-keys/id_rsa $"ubuntu@($target)" -L $"($local_port):($remote_ip):($remote_port)"
-
+}
