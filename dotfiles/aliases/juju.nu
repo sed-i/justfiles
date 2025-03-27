@@ -133,3 +133,13 @@ def get_charm_root []: nothing -> string {
   }
   ""
 }
+
+def charmcraft_purge {
+  (lxc list --project=charmcraft --format json
+  | from json
+  | get name
+  | where { |it| $it | str starts-with 'charmcraft-' }
+  | each { |it| lxc --project=charmcraft delete $it }
+  )
+}
+

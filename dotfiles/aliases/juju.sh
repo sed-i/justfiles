@@ -42,3 +42,10 @@ unit_data() {
   # $2 = endpoint name
   jshu "$1" --format=json | jq -r ".\"$1\".\"relation-info\" | .[] | select(.endpoint == \"$2\") | .\"related-units\""
 }
+
+charmcraft_purge() {
+  for instance in $(lxc list --project=charmcraft --format json | jq -r '.[] | select(.name | startswith("charmcraft-")) | .name');
+  do
+    lxc --project=charmcraft delete $instance
+  done
+}
