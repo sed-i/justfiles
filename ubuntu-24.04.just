@@ -172,7 +172,7 @@ desktop: git kitty
 
 zellij-remote: nushell
     mkdir -p ~/.local/bin
-    wget -qO - https://github.com/zellij-org/zellij/releases/download/v0.40.1/zellij-x86_64-unknown-linux-musl.tar.gz | tar -xz -C ~/.local/bin/
+    wget -qO - https://github.com/zellij-org/zellij/releases/download/v0.42.2/zellij-x86_64-unknown-linux-musl.tar.gz | tar -xz -C ~/.local/bin/
     mkdir -p ~/.config/zellij
     ln -sf "$PWD/dotfiles/zellij/config.remote.kdl" "$HOME/.config/zellij/config.kdl"
 

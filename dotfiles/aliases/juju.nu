@@ -134,7 +134,7 @@ def get_charm_root []: nothing -> string {
   ""
 }
 
-def charmcraft_purge {
+def charmcraft_purge [] {
   (lxc list --project=charmcraft --format json
   | from json
   | get name
