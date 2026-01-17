@@ -1,3 +1,5 @@
+alias nsenter_all='sudo nsenter --mount --uts --ipc --net --pid -t'
+
 rock_unpack() {
     local ARCHIVE_PATH="$1"
     local PROVIDED_TAG="$2"
