@@ -76,6 +76,7 @@ def ctrzd [
     }
 }
 
+
 def subuid [
     user?: string
 ] {
@@ -89,4 +90,29 @@ def subuid [
                  "the container engine runs as the host's root. It doesn't use the mapping in /etc/subuid at all.")
     }
     $match
+}
+
+
+def docker_aggressive_purge [] {
+  print (docker system df | from ssv)
+        print "Delete everything? [yN]"
+        let user_input = (input --numchar 1 --default 'n')
+        if $user_input !~ "[yY]" { return }
+        let containers = docker ps -aq | lines | each { |id| docker rm -f $id }
+        let images = docker images -aq | lines | each { |id| docker rmi -f $id }
+        let volumes = docker volume ls -q | lines | each { |vn| docker volume rm $vn }
+        let networks = docker network prune -f | lines
+        let build_cache = docker builder prune --all --force
+        let global = docker system prune -a --volumes --force
+        let df = docker system df | from ssv
+
+        print {
+                "containers": $containers,
+                "images": $images,
+                "volumes": $volumes,
+                "networks": $networks,
+                "build_cache": $build_cache,
+                "global": $global,
+        }
+        print (docker system df | from ssv)
 }
