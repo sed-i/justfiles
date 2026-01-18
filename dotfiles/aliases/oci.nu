@@ -1,3 +1,6 @@
+alias nsenter_all = sudo nsenter --mount --uts --ipc --net --pid -t
+
+
 def rock_unpack [
     archive_path: path,         # The .tar OCI archive
     provided_tag?: string       # Optional: Specific tag to use
@@ -41,4 +44,49 @@ def rock_unpack [
     }
 
     print $"Unpacked successfully into: ($temp_dir)/container"
+}
+
+
+def ctrzd [
+    matcher?: string  # Optional: Filter for PIDs whose command matches this regex
+] {
+    # start with shim pids
+    mut next_pids = (ps -l | where name =~ containerd-shim | get pid)
+
+    # table to collect all discovered pid rows
+    mut collected = [] # (ps -l | where ppid in $next_pids | select ppid pid user_id name command)
+
+    # set of current parent pids to expand
+    # mut next_parents = $collected
+
+    # loop until no new pids are found
+    while ($next_pids | length) > 0 {
+        # append new rows to collected
+        $collected = ($collected ++ (ps -l | where ppid in $next_pids | select ppid pid user_id name command))
+
+        # find direct children of current parents
+        $next_pids = (ps -l | where ppid in ($next_pids) | get pid)
+    }
+
+    # collected now contains all rows reachable from shim pids via ppid links
+    if ($matcher | is-empty) {
+        $collected | sort-by name
+    } else {
+        $collected | where name =~ $matcher | sort-by name
+    }
+}
+
+def subuid [
+    user?: string
+] {
+    # Note: In a standard Root (privileged) container (the default for Docker if not specially configured),
+    # the container engine runs as the host's root. It doesn't use the mapping in /etc/subuid at all.
+    let user = if ($user | is-not-empty) { $user } else { $env.USER }
+    let range = (open /etc/subuid | lines | parse "{user}:{uid}:{count}" | where user == $env.USER | first | {"from": ($in.uid | into int), "to": (($in.uid | into int ) + ($in.count | into int))})
+    let match = (ps -l | where user_id >= $range.from and user_id <= $range.to | select ppid pid user_id name command)
+    if ($match | is-empty ) {
+        print -e ("Note: In a standard Root (privileged) container (the default for Docker if not specially configured), " +
+                 "the container engine runs as the host's root. It doesn't use the mapping in /etc/subuid at all.")
+    }
+    $match
 }
