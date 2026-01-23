@@ -21,3 +21,30 @@ def edit [fn: string] {
     vim $fn
   }
 }
+
+def untrivy [] {
+    # This function expects parsed trivy json, e.g.
+    #   open some-trivy.json | untrivy
+    let vulns = $in
+    | get scanner.result.Results
+    | where {|x| "Vulnerabilities" in ($x | columns)}
+    | get Vulnerabilities
+    | flatten
+    | select Severity VulnerabilityID PkgName InstalledVersion FixedVersion
+    | uniq-by VulnerabilityID
+    | sort-by VulnerabilityID
+
+    print $vulns
+
+    let ignores = $in
+    | get scanner.result.Results
+    | where {|x| "Vulnerabilities" in ($x | columns)}
+    | get Vulnerabilities
+    | flatten
+    | select VulnerabilityID PkgName Title
+    | uniq-by VulnerabilityID
+    | sort-by VulnerabilityID 
+    | each {|r| print $'# ($r.PkgName) - ($r.Title)'; print ($r.VulnerabilityID)}
+
+    print $ignores
+}
