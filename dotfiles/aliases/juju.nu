@@ -26,6 +26,8 @@ alias jshu = juju show-unit
 alias jof = juju offer
 alias jcon = juju consume
 alias jsa = juju scale-application
+alias ji = juju info
+alias jeb = juju export-bundle
 
 def jpbl [unit container command] {
   sh -c $'juju exec --unit ($unit) -- PEBBLE_SOCKET=/charm/containers/($container)/pebble.socket pebble ($command)'

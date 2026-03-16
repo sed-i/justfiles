@@ -25,6 +25,8 @@ alias jshu='juju show-unit'
 alias jof='juju offer'
 alias jcon='juju consume'
 alias jsa='juju scale-application'
+alias ji='juju info'
+alias jeb='juju export-bundle'
 
 reldata_endpoints() {
   # $1 = unit name
