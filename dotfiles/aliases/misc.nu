@@ -5,6 +5,14 @@ alias scpo = scp -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking no"
 
 alias partitions = sudo lsblk --exclude 7 --output NAME,FSTYPE,FSVER,LABEL,SIZE,FSAVAIL,FSUSE%,RO,TYPE,MOUNTPOINTS
 
+def ports [] {
+  # "MODE" is a custom addition to capture the "(LISTEN)"
+  sudo lsof -nP -iTCP -sTCP:LISTEN -iUDP
+  | lines
+  | skip 1
+  | split column -r '\s+' COMMAND PID USER FD TYPE DEVICE SIZE_OFF NODE NAME MODE
+}
+
 def multipass_vm_ip [name] {
   multipass list --format=json | from json | get list | where {|it| $it.name == $name} | flatten | get ipv4.0
 }
